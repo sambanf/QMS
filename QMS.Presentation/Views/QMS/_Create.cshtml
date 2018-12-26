@@ -1,0 +1,75 @@
+﻿@model QMS.ViewModel.QHeadViewModel
+
+
+@using (Html.BeginForm("Create", "QMS", FormMethod.Post, new { id = "create-form", name = "create-form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.HiddenFor(model => model.q_id)
+        <div class="form-group">
+            @Html.LabelFor(model => model.q_code, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.q_code, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+                @Html.ValidationMessageFor(model => model.q_code, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.q_name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.q_name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.q_name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.q_type, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @{
+                    List<SelectListItem> listItems = new List<SelectListItem>();
+                    listItems.Add(new SelectListItem
+                    {
+                        Text = "Personality",
+                        Value = "Personality"
+                    });
+                    listItems.Add(new SelectListItem
+                    {
+                        Text = "Technical",
+                        Value = "Technical"
+                    });
+                }
+                @Html.DropDownListFor(model => model.q_type, listItems, "-- Type --", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.q_type, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Close" class="btn btn-default" data-dismiss="modal" />
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+        $("#create-form").submit(function () {
+            $.ajax({
+                url: '@Url.Action("Create","QMS")',
+                type: 'post',
+                data: $(this).serialize(),
+                success: function (result) {
+                    if (result.success) {
+                        alert("Data Successfully Added");
+                        $("#mver").modal("hide");
+                        GetList();
+                    } else {
+                        alert("Error!." + result.message)
+                    }
+                }
+            });
+            return false;
+        });
+
+</script>

@@ -1,0 +1,26 @@
+﻿@model IEnumerable<QMS.ViewModel.QDetailViewModel>
+
+<table class="table">
+    <thead>
+        <tr class="row">
+            <td class="col-sm-2">
+                @Html.DisplayNameFor(model => model.q_no)
+            </td>
+            <td class="col-sm-6">
+                @Html.DisplayNameFor(model => model.q_question)
+            </td>
+            <td class="col-sm-4">
+                #
+            </td>
+        </tr>
+
+    </thead>
+
+    <tbody id="question-list">
+        @foreach (var item in Model)
+        {
+            @Html.Partial("_Detailitem", item)
+        }
+    </tbody>
+
+</table>

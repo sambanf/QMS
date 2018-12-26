@@ -1,0 +1,64 @@
+﻿@model IEnumerable<QMS.ViewModel.QHeadViewModel>
+
+<button id="btn-new-version" type="button" class="btn btn-primary btn-new">
+    Create
+</button>
+<br />
+<br />
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.q_code)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.q_name)
+        </th>
+        <th>#</th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.q_code)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.q_name)
+        </td>
+        <td>
+            <a href="#" class="view-link" data-id="@item.q_id">View</a>
+        </td>
+    </tr>
+}
+
+</table>
+
+<script type="text/javascript">
+    $('#btn-new-version').click(function () {
+            $.ajax({
+                url: '@Url.Action("Create","QMS")',
+                type: 'get',
+                success: function (result) {
+                    $("#mvertitle").html("Create new Version")
+                    $("#mverbody").html(result);
+                    $("#mver").modal("show")
+                },
+                error: function (err) {
+                    alert(err);
+                }
+              });
+    });
+
+    $(".view-link").click(function () {
+            $.ajax({
+                url: '@Url.Action("Edit", "QMS")',
+                type: 'get',
+                data: { id: $(this).attr("data-id") },
+                success: function (result) {
+                    $("#mvertitle").html("View Question");
+                    $("#mverbody").html(result);
+                    $("#mver").modal("show");
+                }
+            })
+
+        });
+</script>

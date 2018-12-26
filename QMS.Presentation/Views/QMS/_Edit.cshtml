@@ -1,0 +1,157 @@
+﻿@model QMS.ViewModel.QHeadViewModel
+
+
+@using (Html.BeginForm("Edit", "QMS", FormMethod.Post, new { id = "edit-form", name = "edit-form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.HiddenFor(model => model.q_id, new { htmlAttributes = new { @class = "form-control id" } })
+            @Html.LabelFor(model => model.q_code, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.q_code, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.q_code, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.q_name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.q_name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.q_name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.q_type, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @{
+                    List<SelectListItem> listItems = new List<SelectListItem>();
+                    if (Model.q_type == "Personality")
+                    {
+                        listItems.Add(new SelectListItem
+                        {
+                            Text = "Technical",
+                            Value = "Technical"
+                        });
+                        listItems.Add(new SelectListItem
+                        {
+                            Text = "Personality",
+                            Value = "Personality",
+                            Selected = true
+                        });
+                    }
+                    else
+                    {
+                        listItems.Add(new SelectListItem
+                        {
+                            Text = "Technical",
+                            Value = "Technical",
+                             Selected = true
+                        });
+                        listItems.Add(new SelectListItem
+                        {
+                            Text = "Personality",
+                            Value = "Personality"
+                           
+                        });
+                    }
+
+                }
+                @Html.DropDownListFor(model => model.q_type, listItems, "-- Type --", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.q_type, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Close" class="btn btn-default" data-dismiss="modal" />
+                <input id="btn-edit" type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+    <br />
+    <button type="button" id="btn-new-q" class="btn btn-warning btn-new" href="#qmod">Add Point</button>
+    <br />
+    <hr />
+    <div id="question-list1"></div>
+
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+            GetList();
+        });
+
+        function GetList(){
+            $.ajax({
+                url: '@Url.Action("Detail","QMS")',
+                type: 'get',
+                data: {id: $("#q_id").val()},
+                success: function (result) {
+                    $("#question-list1").html(result);
+                },
+                error: function (err) {
+                    $("#question-list1").html(err);
+                }
+            });
+        }
+
+        $("#edit-form").submit(function () {
+            //alert($(this).serialize());
+            var qList = [];
+            $(this).find("#question-list").find("tr").each(function () {
+                var list = { q_id: $(this).find("input[name=q_id]").val(), q_no: $(this).find("input[name=q_no]").val(), q_question: $(this).find("input[name=q_question]").val() }
+                qList.push(list);
+            });
+            var data = {
+                q_id: $(this).find("#q_id").val(),
+                q_code: $(this).find("#q_code").val(),
+                q_name: $(this).find("#q_name").val(),
+                q_type: $(this).find("#q_type").val(),
+                questiondetail: qList
+            };
+            //alert(JSON.stringify(data));
+
+
+
+            $.ajax({
+                url: '@Url.Action("Edit","QMS")',
+                type: this.method,
+                data: {model:data},
+                success: function (result) {
+                    if (result.success) {
+                        alert("Data Successfully Saved !");
+                        $(".modal").modal("hide");
+                        GetList();
+                    } else {
+                        alert("Error!." + result.message)
+                    }
+                }
+            });
+            return false;
+        });
+
+    $('#btn-new-q').click(function () {
+            $.ajax({
+                url: '@Url.Action("Question","QMS")',
+                type: 'get',
+                success: function (result) {
+                    $("#qmodtitle").html("Create new Question")
+                    $("#qmodbody").html(result);
+                    $("#qmod").modal("show")
+
+                },
+                error: function (err) {
+                    alert(err);
+                }
+            });
+    });
+
+    function RemoveItem(obj) {
+        var tr = $(obj).closest("tr");
+        tr.remove();
+    }
+</script>

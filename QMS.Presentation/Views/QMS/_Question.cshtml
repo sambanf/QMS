@@ -1,0 +1,44 @@
+﻿@model QMS.ViewModel.QDetailViewModel
+
+@using (Html.BeginForm("DetailItem", "QMS", FormMethod.Post, new { id ="q-form", name = "q-form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.LabelFor(model => model.q_no, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.q_no, new { htmlAttributes = new { @class = "form-control", @id="inputno" } })
+                @Html.ValidationMessageFor(model => model.q_no, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.q_question, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10" >
+                @Html.EditorFor(model => model.q_question, new { htmlAttributes = new { @class = "form-control question", @id = "inputques" } })
+                @Html.ValidationMessageFor(model => model.q_question, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input id="submitq" type="submit" value="Create" class="btn btn-default" data-dismiss="modal"/>
+            </div>
+        </div>
+    </div>
+}
+
+
+<script type="text/javascript">
+    $("#submitq").click(function () {
+        var data = { q_no : $("#inputno").val(), q_question: $("#inputques").val() };
+        //alert(JSON.stringify(data))
+            $.ajax({
+                url: '@Url.Action("Detailitem","QMS")',
+                type: 'post',
+                data: { model : data },
+                success: function (result) {
+                    $("#question-list").append(result);
+                }
+        });
+    });
+</script>

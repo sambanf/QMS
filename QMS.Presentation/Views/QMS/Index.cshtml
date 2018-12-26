@@ -1,0 +1,63 @@
+﻿@{
+    ViewBag.Title = "Question Management";
+}
+<div class="panel panel-body">
+    <div class="table-list">
+        Hi halo
+    </div>
+</div>
+
+@* Modal *@
+<div id="mver" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #ffad5b">
+                <button id="bmodver" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 id="mvertitle" class="modal-title">Create</h4>
+            </div>
+            <div id="mverbody" class="modal-body">
+                <p>One fine body&hellip;</p>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="qmod" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #ffad5b">
+                <button id="bmodque" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 id="qmodtitle" class="modal-title">Create</h4>
+            </div>
+            <div id="qmodbody" class="modal-body">
+                <p>One fine body&hellip;</p>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            GetList();
+        });
+
+        function GetList(){
+            $.ajax({
+                url: '@Url.Action("List","QMS")',
+                type: 'get',
+                success: function (result) {
+                    $(".table-list").html(result);
+                },
+                error: function (err) {
+                    $(".table-list").html(err);
+                }
+            });
+        }
+    </script>
+
+}
